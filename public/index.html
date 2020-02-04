@@ -170,7 +170,7 @@
                             i++;
                         }
                     }
-                    this.arrTop10.splice(10);
+                    this.arrTop10 = this.arrTop10.slice(0, 10);
                 }
             },
             created() {
