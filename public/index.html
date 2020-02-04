@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://unpkg.com/vue-router@2.0.0/dist/vue-router.js"></script>
+    <script src="https://unpkg.com/vuex"></script>
+    <script src="js/script.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Who's A Good Boy?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+    <div id="app">
+        <v-app id="inspire">
+            <v-app-bar fixed color="#43a047" dark prominent src="./img/bar1.jpg" fade-img-on-scroll shrink-on-scroll app>
+                <template v-slot:img="{props}">
+                  <v-img v-bind="props" gradient="to top right, rgba(100,115,201,.33), rgba(25,32,72,.7)"></v-img>
+                </template>
+                <v-toolbar-title class="display-1">{{sitename}}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <template v-slot:extension>
+                    <v-tabs
+                      align-with-title
+                      background-color="transparent">
+                      <v-tab to='/'>Dog</v-tab>
+                      <v-tab to='/goodboy'>Good Boy</v-tab>
+                      <v-tab to='/rating'>Rating</v-tab>
+                    </v-tabs>
+                  </template>
+                </v-btn>
+            </v-app-bar>
+            <v-content app>
+                <v-container fluid>
+                    <router-view></router-view>
+                </v-container>
+            </v-content>
+        </v-app>
+    </div>
+
+    <script>
+        const store = new Vuex.Store({
+            state: {
+                sitename: "Who's A Good Boy?",
+                dogs: [],
+            },
+            mutations: {
+                addDogs(state, arrDogs) {
+                    for (let i = 0; i < arrDogs.length; i++) {
+                        state.dogs.push(arrDogs[i]);
+                    }
+                }
+            },
+            actions: {
+                loadData({
+                    commit
+                }) {
+                    commit('addDogs', window.dogs);
+                }
+            }
+        });
+        store.dispatch('loadData');
+
+        const Dog = {
+            computed: {
+                ...Vuex.mapState(['dogs'])
+            },
+            template: `
+            <div>
+                <v-card elevation="4" width="450px" height="450px" class="mx-auto">
+                    <v-carousel continuous height="450px" width="450px" cycle show-arrows-on-hover hide-delimiter-background delimiter-icon="mdi-minus">
+                        <v-carousel-item v-for="(src,index) in dogs" :key="index" :src="src"></v-carousel-item>
+                    </v-carousel>
+                </v-card>
+            </div>`,
+        };
+
+        const GoodBoy = {
+            data() {
+                return {
+                    arrRandomImg: [],
+                }
+            },
+            computed: {
+                ...Vuex.mapState(['dogs'])
+            },
+            template: `
+            <div>
+                <h1 class = text-md-center>Who's A Good Boy?</h1>
+                <div class="d-flex justify-center">
+                    <v-card elevation="6" class="mx-auto d-flex flex-column" width="350px" v-for="imgDog in arrRandomImg" :key="imgDog.index">
+                        <v-img :src="imgDog.src" alt="dog"></v-img>
+                        <v-btn @click='addLike(imgDog)' class="mx-auto" block>This A Good Boy!</v-btn>
+                    </v-card>
+                </div>
+            </div>`,
+            methods: {
+                getRandom: function(min, max) {
+                    min = Math.ceil(min);
+                    max = Math.floor(max);
+                    return Math.floor(Math.random() * (max - min)) + min;
+                },
+                getRandomImg: function() {
+                    this.arrRandomImg = [];
+                    while (this.arrRandomImg.length < 2) {
+                        randomDog = dogs[this.getRandom(0, dogs.length)];
+                        if (this.arrRandomImg.length == 0) {
+                            this.arrRandomImg.push(randomDog);
+                        }
+                        if (this.arrRandomImg.find((el) => el === randomDog)) {
+                            continue;
+                        } else {
+                            this.arrRandomImg.push(randomDog);
+                        }
+                    }
+                },
+                addLike: function(arr) {
+                    arr.like += 1;
+                    this.getRandomImg();
+                }
+            },
+            created() {
+                this.getRandomImg();
+            }
+        };
+
+        const Rating = {
+            data() {
+                return {
+                    arrTop10: [],
+                }
+            },
+            computed: {
+                ...Vuex.mapState(['dogs'])
+            },
+            template: `
+            <div>
+                <v-card elevation="0" class="mx-auto" width="350px">
+                    <v-list>
+                        <h1 class ="text-md-center">Top 10 Good Boys</h1>
+                        <v-list-item v-for="(dogTop, index) in arrTop10" :key="dogTop.index">
+                            <v-list-item-avatar width="100px" height="100px">
+                                <v-img :src="dogTop.src"></v-img>
+                            </v-list-item-avatar>
+                            <v-list-item-content>
+                                <v-list-item-title>Position: {{index +1}}</v-list-item-title>
+                                <v-list-item-subtitle>Likes: {{dogTop.like}}</v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list>
+                </v-card>
+            </div>`,
+            methods: {
+                buble: function() {
+                    this.arrTop10 = dogs;
+                    let i = 0;
+                    while (i < this.arrTop10.length - 1) {
+                        if ((this.arrTop10[i].like) < (this.arrTop10[i + 1].like)) {
+                            let tmp = this.arrTop10[i];
+                            this.arrTop10[i] = this.arrTop10[i + 1];
+                            this.arrTop10[i + 1] = tmp;
+                            i = (i >= 1) ? i - 1 : i + 1;
+                        } else {
+                            i++;
+                        }
+                    }
+                    this.arrTop10.splice(10);
+                }
+            },
+            created() {
+                this.buble()
+            }
+        };
+
+        const routes = [{
+            path: '/',
+            component: Dog
+        }, {
+            path: '/goodboy',
+            component: GoodBoy
+        }, {
+            path: '/rating',
+            component: Rating
+        }, ];
+        const router = new VueRouter({
+            routes: routes,
+        });
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+            router: router,
+            store,
+            computed: {
+                ...Vuex.mapState(['sitename']),
+            }
+        });
+    </script>
+</body>
+
+</html>
