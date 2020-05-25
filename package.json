@@ -1,23 +1,23 @@
 {
-  "name": "Who'sAGoodBoy",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GavryushaWoof/WhoIsAGoodBoy.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/GavryushaWoof/WhoIsAGoodBoy/issues"
-  },
-  "homepage": "https://github.com/GavryushaWoof/WhoIsAGoodBoy#readme",
-  "dependencies": {
-    "express": "^4.17.1"
-  }
+    "name": "whoisagoodboy",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/GavryushaWoof/WhoIsAGoodBoy.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/GavryushaWoof/WhoIsAGoodBoy/issues"
+    },
+    "homepage": "https://github.com/GavryushaWoof/WhoIsAGoodBoy#readme",
+    "dependencies": {
+        "express": "^4.17.1"
+    }
 }
